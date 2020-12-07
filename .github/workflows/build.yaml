@@ -1,0 +1,23 @@
+name: registry-build
+
+on:
+  push:
+    branches:
+      - "main"
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - uses: azure/docker-login@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USER }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      - name: Build and push image
+        run: |
+          docker build . -t replicated/registry:2.7.1
+          docker push replicated/registry:2.7.1
